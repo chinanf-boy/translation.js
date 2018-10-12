@@ -9,7 +9,7 @@ import detect from './detect'
 import getError, { ERROR_CODE } from '../../utils/error'
 
 export default async function(options: StringOrTranslateOptions) {
-  let { text, com = false, from = '', to = '' } =
+  let { text, com = false, from = '', to = '', timeout = 5000 } =
     typeof options === 'string' ? { text: options } : options
 
   if (!from) {
@@ -18,7 +18,6 @@ export default async function(options: StringOrTranslateOptions) {
   if (!to) {
     to = from.startsWith('zh') ? 'en' : 'zh-CN'
   }
-
   return transformRaw(
     await request({
       url: getRoot(com) + '/translate_a/single',
@@ -45,13 +44,15 @@ export default async function(options: StringOrTranslateOptions) {
         */
         dt: ['at', 'bd', 'ex', 'md', 'qca', 'rw', 'rm', 'ss', 't'],
         q: text
-      }
+      },
+        timeout
     }),
     {
       from,
       to,
       com,
-      text
+      text,
+      timeout
     }
   )
 }

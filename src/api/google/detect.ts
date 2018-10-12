@@ -9,7 +9,7 @@ interface DetectResult {
 }
 
 export default async function(options: StringOrTranslateOptions) {
-  const { text, com = false } =
+  const { text, com = false, timeout = 5000 } =
     typeof options === 'string' ? { text: options } : options
 
   // https://translate.google.cn/translate_a/single?client=gtx&sl=auto&dj=1&ie=UTF-8&oe=UTF-8&q=test
@@ -22,7 +22,8 @@ export default async function(options: StringOrTranslateOptions) {
       ie: 'UTF-8',
       oe: 'UTF-8',
       q: text
-    }
+    },
+    timeout
   })) as DetectResult
 
   if (src) return src

@@ -25,7 +25,9 @@ export interface TranslateOptions {
   // 想将文本翻译成哪个语种
   to?: string
   // 是否使用国际版谷歌翻译。仅对谷歌翻译生效。
-  com?: boolean
+  com?: boolean,
+  // 超时
+  timeout?: number
 }
 
 /** 查询参数，既可以是字符串，也可以是对象 */

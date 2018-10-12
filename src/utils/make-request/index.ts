@@ -10,7 +10,7 @@ import { stringify } from 'querystring'
 import getError, { ERROR_CODE } from '../error'
 
 export default function(options: RequestOptions): Promise<any> {
-  const { method = 'get' } = options
+  const { method = 'get', timeout = 5000 } = options
   const urlObj = parse(options.url, true)
   const qs = stringify(Object.assign(urlObj.query, options.query))
 
@@ -45,15 +45,22 @@ export default function(options: RequestOptions): Promise<any> {
     method,
     path: urlObj.pathname + '?' + qs,
     headers,
+    timeout,
     auth: urlObj.auth
   }
 
   const responseType = options.responseType || 'json'
 
   return new Promise((resolve, reject) => {
+
     const req = (urlObj.protocol === 'https:' ? requestHTTPs : requestHTTP)(
       httpOptions,
       res => {
+        // 超时
+        if (res.statusCode === 408) {
+          reject(getError(ERROR_CODE.NETWORK_TIMEOUT))
+          return
+        }
         // 内置的翻译接口都以 200 作为响应码，所以不是 200 的一律视为错误
         if (res.statusCode !== 200) {
           reject(getError(ERROR_CODE.API_SERVER_ERROR))
