@@ -2,6 +2,8 @@ import { StringObject } from '../../types'
 import { RequestOptions } from './types'
 import { request as requestHTTP } from 'http'
 import { request as requestHTTPs } from 'https'
+const fakeUA = require('random-fake-useragent');
+
 import { parse } from 'url'
 import { stringify } from 'querystring'
 
@@ -13,8 +15,7 @@ export default function(options: RequestOptions): Promise<any> {
   const qs = stringify(Object.assign(urlObj.query, options.query))
 
   const headers: StringObject = {
-    'User-Agent':
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
+    'User-Agent': fakeUA.getRandom()
   }
 
   let body: string
